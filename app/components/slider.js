@@ -1,3 +1,7 @@
+import { _getClosest } from "../utils/math"
+import { number } from "../utils/math"
+import { lerp } from "../utils/math"
+    
 export default class Slider {
     constructor(options = {}) {
         this.bind()
@@ -13,13 +17,24 @@ export default class Slider {
         this.scrollPos = 0
         this.clonesHeight = 0
 
-        // this.rAF = undefined
+        // this.onY = 0
+        // this.offY = 0
+
+        // this.currentY = 0
+        // this.lastY = 0
+
+        // this.min = 0
+        // this.max = 0
+
+        // this.centerY = window.innerHeight / 2
+
+        this.rAF = undefined
 
         this.init()
     }
 
     bind() {
-        ['reCalc', 'scrollUpdate', 'clone', 'addEventListeners', 'init'].forEach((fn) => this[fn] = this[fn].bind(this))
+        ['on', 'off', 'getScrollPos', 'setScrollPos', 'clone', 'setBounds', 'scrollUpdate', 'resize', 'addEventListeners', 'init'].forEach((fn) => this[fn] = this[fn].bind(this))
     }
 
     getScrollPos() {
@@ -28,6 +43,19 @@ export default class Slider {
 
     setScrollPos(position) {
         this.slider.scrollTop = position
+    }
+
+    // clamp() {
+    //     this.currentY = Math.max(Math.min(this.currentY, this.min), this.max)
+    // }
+
+    clone() {
+        this.slides.forEach(slide => {
+            let clone = slide.cloneNode(true)
+            this.slider.appendChild(clone)
+            clone.classList.add('clone')
+            this.clones.push(clone)
+        })
     }
 
     getClonesHeight() {
@@ -39,7 +67,7 @@ export default class Slider {
         return clonesHeight
     }
 
-    reCalc() {
+    setBounds() {
         this.scrollPos = this.getScrollPos()
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
@@ -74,41 +102,95 @@ export default class Slider {
 
         // this.requestAnimationFrame(this.scrollUpdate)
     }
-    
-    // requestAnimationFrame() {
-    //     this.rAF = requestAnimationFrame(this.scrollUpdate)
+
+    on() {
+        this.slider.classList.add('is-scrolling')
+        console.log("scrolling")
+    }
+
+    off() {
+        this.slider.classList.remove('is-scrolling')
+        console.log('not scrolling')
+    }
+    // on(e) {
+        // this.onY = window.scrollY
+        // console.log("i am on")
     // }
+
+    // off(e) {
+    //     this.snap()
+    //     this.offY = this.currentY
+    //     console.log("i am off")
+    // }
+
+    // closest() {
+    //     const numbers = []
+    //     this.slides.forEach((slide, index) => {
+    //         const bounds = slide.getBoundingClientRect()
+    //         const diff = this.currentY - this.lastY
+    //         const center = (bounds.y + diff) + (bounds.height / 2)
+    //         const fromCenter = this.centerY - center
+    //         numbers.push(fromCenter)
+    //     })
+        
+    //     let closest = number(0, numbers)
+    //     closest = numbers[closest]
+        
+    //     return {
+    //         closest
+    //     }
+    // }
+    
+    // snap() {
+    //     const { closest } = this.closest()
+
+    //     this.currentY = this.currentY + closest
+    //     this.clamp()
+    // }
+
+    requestAnimationFrame() {
+        this.rAF = requestAnimationFrame(this.scrollUpdate)
+    }
 
     // cancelAnimationFrame() {
     //   cancelAnimationFrame(this.rAF)
     // }
 
-
-    // onResize() {
-    //     window.requestAnimationFrame(this.reCalc)
-    // }
-
     addEventListeners() {
+        this.slider.addEventListener('scroll', this.scrollUpdate, { passive: true })
+        this.slider.addEventListener('scroll', this.on, { passive: true })
+
+        let timer = null;
         this.slider.addEventListener('scroll', () => {
-            window.requestAnimationFrame(this.scrollUpdate)
-        }, false)
-        window.addEventListener('resize', () => {
-            window.requestAnimationFrame(this.reCalc)
-        }, false)
+            if(timer !== null) {
+                clearTimeout(timer);        
+            }
+            timer = setTimeout(() => {
+                // do something
+                this.off()
+            }, 150);
+        }, false);
+        
+        window.addEventListener('resize', this.resize, false)
     }
 
-    clone() {
-        this.slides.forEach(slide => {
-            let clone = slide.cloneNode(true)
-            this.slider.appendChild(clone)
-            clone.classList.add('clone')
-            this.clones.push(clone)
-        })
+    removeEventListeners() {
+        this.slider.removeEventListener('scroll', this.scrollUpdate, { passive: true })
+        this.slider.removeEventListener('scroll', this.on, { passive: true })
+    }
+
+    resize() {
+        this.setBounds()
+    }
+
+    destroy() {
+        this.removeEventListeners()
+        this.opts = {}
     }
 
     init() {
         this.clone()
-        this.reCalc()
+        this.setBounds()
         this.addEventListeners()
     }
 }

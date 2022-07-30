@@ -3,6 +3,14 @@
   height: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+
+  &.is-scrolling{
+    // cursor: grabbing;
+    
+    .slide {
+      transform: scale(0.9);
+    }
+  }
 }
 
 .slide {
@@ -13,6 +21,7 @@
 /*   max-height: 1000px; */
 /*   height: 38%; */
   height: 21vw;
+  transition: transform .6s cubic-bezier(.165,.84,.44,1);
 }
 
 .slide__title {
