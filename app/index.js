@@ -12,8 +12,8 @@
 // }
 // new App()
 
-var slider = document.querySelector('.js-loopContainer'),
-  slides = [...slider.querySelectorAll('.js-loopItem')],
+var slider = document.querySelector('.js-slider__inner'),
+  slides = [...slider.querySelectorAll('.js-slide')],
   clones = [],
   disableScroll = false,
   scrollHeight = 0,
@@ -75,10 +75,10 @@ function onLoad () {
   slides.forEach(slide => {
     let clone = slide.cloneNode(true)
     slider.appendChild(clone)
-    clone.classList.add('js-clone')
+    clone.classList.add('clone')
   })
 
-  clones = slider.querySelectorAll('.js-clone')
+  clones = slider.querySelectorAll('.clone')
 
   reCalc()
 

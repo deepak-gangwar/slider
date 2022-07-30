@@ -15,33 +15,20 @@
   height: 21vw;
 }
 
-/* To hide the scrollbar */
-
-/*
-.Loop {
-  scrollbar-width: none;
-}
-
-.Loop::scrollbar {
-  display: none;
-}
-*/
-
-
-
-
-
-
-h1 {
+.slide__title {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
   margin: 0;
   font-size: 14vw;
   font-weight: normal;
   color: #fff;
 }
 
-.slide__title {
+.text{
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
+  color: #666;
+  left: 4rem;
+  bottom: 3rem;
 }

@@ -5,8 +5,8 @@ export default class Slider {
         this.opts = {
         }
       
-        this.slider = document.querySelector('.js-loopContainer')
-        this.slides = [...this.slider.querySelectorAll('.js-loopItem')]
+        this.slider = document.querySelector('.js-slider__inner')
+        this.slides = [...this.slider.querySelectorAll('.js-slide')]
         this.clones = []
         this.disableScroll = false
         this.scrollHeight = 0  // can be renamed to slider height

@@ -18,7 +18,7 @@ module.exports = merge(
             // devServer.open
             // Tells dev-server to open the browser after server had been started. 
             // Set it to true to open your default browser.
-            open: true,
+            // open: true,
 
             // devServer.https
             // By default, dev-server will be served over HTTP. 
