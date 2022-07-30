@@ -1,0 +1,28 @@
+$color-black: #000;
+
+// For dark colored theme
+// $color-primary: rgb(181, 181, 181);
+// $color-accent: rgb(39, 39, 39);
+// $color-yellow: rgb(250, 222, 50);
+// $color-offwhite: rgb(246, 244, 241);
+
+// For light colored theme
+$color-primary: rgb(246, 244, 241);
+$color-accent: rgb(29, 29, 29);
+$color-orange: rgb(231, 112, 80);
+$color-white: rgb(255, 255, 255);
+
+$saol: 'Saol Display';
+$suisse: 'Suisse Intl';
+
+$ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+
+$z-indexes: (
+    'noscript',
+    'preloader',
+    'cursor',
+    'navigation',
+    'content',
+    'cases',
+    'canvas',
+);

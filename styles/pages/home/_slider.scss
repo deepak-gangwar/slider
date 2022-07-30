@@ -1,0 +1,47 @@
+.slider__inner {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide {
+  position: relative;
+  text-align: center;
+  /* height: clamp(300px, 80%, 700px) */
+  min-height: 100px;
+/*   max-height: 1000px; */
+/*   height: 38%; */
+  height: 21vw;
+}
+
+/* To hide the scrollbar */
+
+/*
+.Loop {
+  scrollbar-width: none;
+}
+
+.Loop::scrollbar {
+  display: none;
+}
+*/
+
+
+
+
+
+
+h1 {
+  margin: 0;
+  font-size: 14vw;
+  font-weight: normal;
+  color: #fff;
+}
+
+.slide__title {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+}
