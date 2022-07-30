@@ -13,95 +13,102 @@ export default class Slider {
         this.scrollPos = 0
         this.clonesHeight = 0
 
-        this.rAF = undefined
+        // this.rAF = undefined
+
+        this.init()
     }
 
     bind() {
-        ['getPos', 'setPos', 'getClonesHeight', 'reCalc', 'scrollUpdate', 'onResize', 'addEventListeners', 'init'].forEach((fn) => this[fn] = this[fn].bind(this))
+        ['reCalc', 'scrollUpdate', 'clone', 'addEventListeners', 'init'].forEach((fn) => this[fn] = this[fn].bind(this))
     }
 
-    getPos() {
+    getScrollPos() {
         return (this.slider.pageYOffset || this.slider.scrollTop) - (this.slider.clientTop || 0)
     }
 
-    setPos(position) {
+    setScrollPos(position) {
         this.slider.scrollTop = position
     }
 
     getClonesHeight() {
-        this.clonesHeight = 0
-
+        let clonesHeight = 0
         this.clones.forEach(clone => {
-            this.clonesHeight += clone.offsetHeight
+            clonesHeight += clone.offsetHeight
         })
 
-        return this.clonesHeight
+        return clonesHeight
     }
 
     reCalc() {
-        this.scrollPos = this.getPos
+        this.scrollPos = this.getScrollPos()
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
 
         if (this.scrollPos <= 0) {
-            this.setPos(1)
+            this.setScrollPos(1)
         }
     }
 
     scrollUpdate() {
         if (!this.disableScroll) {
-            this.scrollPos = this.getPos()
+            this.scrollPos = this.getScrollPos()
 
             if (this.clonesHeight + this.scrollPos >= this.scrollHeight) {
-                this.setPos(1)
+                // Scroll to top when you've reached the bottom
+                this.setScrollPos(1) // Scroll down 1 pixel to allow upwards scrolling
                 this.disableScroll = true
             }
             else if (this.scrollPos <= 0) {
-                this.setPos(this.scrollHeight - this.clonesHeight)
+                // Scroll to the bottom when you reach the top
+                this.setScrollPos(this.scrollHeight - this.clonesHeight)
                 this.disableScroll = true
             }
         }
 
         if (this.disableScroll) {
+            // Disable scroll-jumping for a short time to avoid flickering
             window.setTimeout(() => {
                 this.disableScroll = false
             }, 40)
         }
 
-        this.requestAnimationFrame(this.scrollUpdate)
+        // this.requestAnimationFrame(this.scrollUpdate)
     }
     
-    requestAnimationFrame() {
-        this.rAF = requestAnimationFrame(this.scrollUpdate)
-    }
-
-    cancelAnimationFrame() {
-      cancelAnimationFrame(this.rAF)
-    }
-
-    // onScroll() {
-    //     window.requestAnimationFrame(this.scrollUpdate)
+    // requestAnimationFrame() {
+    //     this.rAF = requestAnimationFrame(this.scrollUpdate)
     // }
 
-    onResize() {
-        window.requestAnimationFrame(this.reCalc)
-    }
+    // cancelAnimationFrame() {
+    //   cancelAnimationFrame(this.rAF)
+    // }
+
+
+    // onResize() {
+    //     window.requestAnimationFrame(this.reCalc)
+    // }
 
     addEventListeners() {
-        // this.scrollUpdate()
-        this.slider.addEventListener('scroll', this.scrollUpdate, false)
-        window.addEventListener('resize', this.onResize, false)
+        this.slider.addEventListener('scroll', () => {
+            window.requestAnimationFrame(this.scrollUpdate)
+        }, false)
+        window.addEventListener('resize', () => {
+            window.requestAnimationFrame(this.reCalc)
+        }, false)
     }
 
-    init() {
+    clone() {
         this.slides.forEach(slide => {
             let clone = slide.cloneNode(true)
             this.slider.appendChild(clone)
-            clone.classList.add('js-clone')
+            clone.classList.add('clone')
+            this.clones.push(clone)
         })
-        
-        this.clones = this.slider.querySelectorAll('.js-clone')
-        
+    }
+
+    init() {
+        this.clone()
         this.reCalc()
+        this.addEventListeners()
     }
 }
