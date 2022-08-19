@@ -7,10 +7,17 @@ export default class Slider {
         this.bind()
 
         this.opts = {
+            ease: 0.075
         }
       
-        this.slider = document.querySelector('.js-slider__inner')
+        this.slider = document.querySelector('.js-slider')
+        this.sliderInner = this.slider.querySelector('.js-slider__inner')
         this.slides = [...this.slider.querySelectorAll('.js-slide')]
+        
+        this.current = 0
+        this.targetY = 0
+        this.smoothTarget = []
+
         this.clones = []
         this.disableScroll = false
         this.scrollHeight = 0  // can be renamed to slider height
@@ -34,25 +41,18 @@ export default class Slider {
     }
 
     bind() {
-        ['on', 'off', 'getScrollPos', 'setScrollPos', 'clone', 'setBounds', 'scrollUpdate', 'resize', 'addEventListeners', 'init'].forEach((fn) => this[fn] = this[fn].bind(this))
-    }
-
-    getScrollPos() {
-        return (this.slider.pageYOffset || this.slider.scrollTop) - (this.slider.clientTop || 0)
-    }
-
-    setScrollPos(position) {
-        this.slider.scrollTop = position
+        ['on', 'update', 'resize']
+            .forEach((fn) => this[fn] = this[fn].bind(this))
     }
 
     // clamp() {
-    //     this.currentY = Math.max(Math.min(this.currentY, this.min), this.max)
+    //     this.current = Math.max(Math.min(this.current, this.min), this.max)
     // }
 
     clone() {
         this.slides.forEach(slide => {
             let clone = slide.cloneNode(true)
-            this.slider.appendChild(clone)
+            this.sliderInner.appendChild(clone)
             clone.classList.add('clone')
             this.clones.push(clone)
         })
@@ -68,60 +68,43 @@ export default class Slider {
     }
 
     setBounds() {
-        this.scrollPos = this.getScrollPos()
+        this.slider.scrollTop = 1
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
 
-        if (this.scrollPos <= 0) {
-            this.setScrollPos(1)
-        }
     }
 
-    scrollUpdate() {
-        if (!this.disableScroll) {
-            this.scrollPos = this.getScrollPos()
+    update() {      
+        this.targetY = lerp(this.targetY, this.current, this.opts.ease)
+        this.targetY = Math.round(this.targetY * 100) / 100
+        this.sliderInner.style.transform = `translateY(${this.targetY}px)`
 
-            if (this.clonesHeight + this.scrollPos >= this.scrollHeight) {
-                // Scroll to top when you've reached the bottom
-                this.setScrollPos(1) // Scroll down 1 pixel to allow upwards scrolling
-                this.disableScroll = true
-            }
-            else if (this.scrollPos <= 0) {
-                // Scroll to the bottom when you reach the top
-                this.setScrollPos(this.scrollHeight - this.clonesHeight)
-                this.disableScroll = true
-            }
+        if(this.targetY > 0) {
+            this.current = this.targetY = -(this.scrollHeight - this.clonesHeight)
+            this.sliderInner.style.transform = `translateY(${this.targetY}px)`
+            this.disableScroll = true
+        } else if(Math.abs(this.targetY) > this.scrollHeight / 2) {
+            this.current = this.targetY = 0
+            this.sliderInner.style.transform = `translateY(0)px`
+            this.disableScroll = true
         }
-
-        if (this.disableScroll) {
-            // Disable scroll-jumping for a short time to avoid flickering
-            window.setTimeout(() => {
-                this.disableScroll = false
-            }, 40)
-        }
-
-        // this.requestAnimationFrame(this.scrollUpdate)
+        
+        this.requestAnimationFrame(this.update)
     }
 
-    on() {
+    on(e) {
+        this.current -= e.deltaY
+        console.log('on')
         this.slider.classList.add('is-scrolling')
-        console.log("scrolling")
-    }
-
-    off() {
-        this.slider.classList.remove('is-scrolling')
-        console.log('not scrolling')
-    }
-    // on(e) {
         // this.onY = window.scrollY
-        // console.log("i am on")
-    // }
-
-    // off(e) {
-    //     this.snap()
-    //     this.offY = this.currentY
-    //     console.log("i am off")
-    // }
+    }
+    
+    off() {
+        // this.snap()
+        console.log('off')
+        this.slider.classList.remove('is-scrolling')
+        // this.offY = this.currentY
+    }
 
     // closest() {
     //     const numbers = []
@@ -144,39 +127,41 @@ export default class Slider {
     // snap() {
     //     const { closest } = this.closest()
 
-    //     this.currentY = this.currentY + closest
+    //     this.current = this.current + closest
     //     this.clamp()
     // }
 
     requestAnimationFrame() {
-        this.rAF = requestAnimationFrame(this.scrollUpdate)
+        this.rAF = requestAnimationFrame(this.update)
     }
 
-    // cancelAnimationFrame() {
-    //   cancelAnimationFrame(this.rAF)
-    // }
+    cancelAnimationFrame() {
+      cancelAnimationFrame(this.rAF)
+    }
 
     addEventListeners() {
-        this.slider.addEventListener('scroll', this.scrollUpdate, { passive: true })
-        this.slider.addEventListener('scroll', this.on, { passive: true })
+        this.slider.addEventListener('scroll', this.update, { passive: true })
+        this.slider.addEventListener('wheel', this.on, { passive: true })
 
         let timer = null;
-        this.slider.addEventListener('scroll', () => {
+        this.slider.addEventListener('wheel', () => {
             if(timer !== null) {
                 clearTimeout(timer);        
             }
             timer = setTimeout(() => {
                 // do something
                 this.off()
-            }, 150);
+            }, 300);
         }, false);
         
         window.addEventListener('resize', this.resize, false)
     }
-
+    
     removeEventListeners() {
-        this.slider.removeEventListener('scroll', this.scrollUpdate, { passive: true })
-        this.slider.removeEventListener('scroll', this.on, { passive: true })
+        this.slider.removeEventListener('scroll', this.update, { passive: true })
+        this.slider.removeEventListener('wheel', this.on, { passive: true })
+
+        window.removeEventListener('resize', this.resize, false)
     }
 
     resize() {

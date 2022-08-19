@@ -1,7 +1,10 @@
-.slider__inner {
-  position: relative;
+.slider {
+  // position: relative;
+  position: fixed;
   height: 100%;
-  overflow: auto;
+  width: 100%;
+  // overflow: auto;
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
 
   &.is-scrolling{

@@ -1,4 +1,5 @@
 import Slider from "./components/slider"
+import Smooth from "./components/smoothScroll"
 
 class App {
   constructor() {
