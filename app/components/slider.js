@@ -1,3 +1,5 @@
+import gsap from "gsap"
+
 import { _getClosest } from "../utils/math"
 import { number } from "../utils/math"
 import { lerp } from "../utils/math"
@@ -35,19 +37,32 @@ export default class Slider {
 
         // this.centerY = window.innerHeight / 2
 
+        this.state = {
+            snap: {
+                points: []
+            },
+            index: {
+                last: 0,
+                current: 0
+            },
+            flags: {
+                dragging: !1,
+                scrolling: !1,
+                initialised: !1,
+                off: !1,
+                snapped: !1
+            },
+        }
+
         this.rAF = undefined
 
         this.init()
     }
 
     bind() {
-        ['on', 'onClick', 'update', 'resize']
+        ['onScroll', 'onClick', 'update', 'resize']
             .forEach((fn) => this[fn] = this[fn].bind(this))
     }
-
-    // clamp() {
-    //     this.current = Math.max(Math.min(this.current, this.min), this.max)
-    // }
 
     clone() {
         this.slides.forEach(slide => {
@@ -69,6 +84,14 @@ export default class Slider {
 
     setBounds() {
         this.slider.scrollTop = 1
+
+        this.state.snap.points = null
+        this.state.snap.points = []
+
+        this.slides.forEach(item => {
+            let n = item.getBoundingClientRect().bottom
+            this.state.snap.points.push(-n + 0.75 * window.innerHeight)
+        })
         
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
@@ -100,42 +123,29 @@ export default class Slider {
         this.requestAnimationFrame(this.update)
     }
 
-    on(e) {
+    onScroll(e) {
+        this.state.flags.scrolling = true
+
         this.currentY -= e.deltaY
         this.slider.classList.add('is-scrolling')
         // this.onY = window.scrollY
     }
     
-    off() {
+    offScroll() {
+        this.state.flags.scrolling = false
+
         // this.snap()
+        this.snap(this.state)
+        this.state.index.last = this.state.index.current
+        this.state.index.current = this.state.snap.points.indexOf(this.currentY)
+        
+        this.slides[this.state.index.last].classList.remove('is-active')
+        this.slides[this.state.index.current].classList.add('is-active')
+
+        
         this.slider.classList.remove('is-scrolling')
         // this.offY = this.currentY
     }
-
-    // closest() {
-    //     const numbers = []
-    //     this.slides.forEach((slide, index) => {
-    //         const bounds = slide.getBoundingClientRect()
-    //         const diff = this.currentY - this.lastY
-    //         const center = (bounds.y + diff) + (bounds.height / 2)
-    //         const fromCenter = this.centerY - center
-    //         numbers.push(fromCenter)
-    //     })
-        
-    //     let closest = number(0, numbers)
-    //     closest = numbers[closest]
-        
-    //     return {
-    //         closest
-    //     }
-    // }
-    
-    // snap() {
-    //     const { closest } = this.closest()
-
-    //     this.current = this.current + closest
-    //     this.clamp()
-    // }
 
     onClick() {
         this.goToNextItem()
@@ -150,6 +160,10 @@ export default class Slider {
         this.currentY -= this.slides[0].getBoundingClientRect().height
     }
 
+    snap() {
+        this.currentY = gsap.utils.snap(this.state.snap.points, this.currentY)
+    }
+
     requestAnimationFrame() {
         this.rAF = requestAnimationFrame(this.update)
     }
@@ -160,37 +174,39 @@ export default class Slider {
 
     addEventListeners() {
         this.slider.addEventListener('scroll', this.update, { passive: true })
-        this.slider.addEventListener('wheel', this.on, { passive: true })
+        this.slider.addEventListener('wheel', this.onScroll, { passive: true })
         window.addEventListener('click', this.onClick, false)
 
         let timer = null;
         this.slider.addEventListener('wheel', () => {
             if(timer !== null) {
-                clearTimeout(timer);        
+                clearTimeout(timer)
             }
             timer = setTimeout(() => {
                 // do something
-                this.off()
-            }, 300);
-        }, false);
+                this.offScroll()
+            }, 300)
+        }, false)
         
         window.addEventListener('resize', this.resize, false)
     }
     
     removeEventListeners() {
         this.slider.removeEventListener('scroll', this.update, { passive: true })
-        this.slider.removeEventListener('wheel', this.on, { passive: true })
+        this.slider.removeEventListener('wheel', this.onScroll, { passive: true })
 
         window.removeEventListener('resize', this.resize, false)
     }
 
     resize() {
         this.setBounds()
+        this.snap()
     }
 
     destroy() {
         this.removeEventListeners()
-        this.opts = {}
+
+        this.opts = this.state = {}
     }
 
     init() {

@@ -24,7 +24,11 @@
 /*   max-height: 1000px; */
 /*   height: 38%; */
   height: 21vw;
-  transition: transform .6s cubic-bezier(.165,.84,.44,1);
+  opacity: 0.3;
+  transition: transform .6s cubic-bezier(.165,.84,.44,1), opacity .6s cubic-bezier(.165,.84,.44,1);
+}
+.slide.is-active {
+  opacity: 1;
 }
 
 .slide__title {
