@@ -14,7 +14,7 @@ export default class Slider {
         this.sliderInner = this.slider.querySelector('.js-slider__inner')
         this.slides = [...this.slider.querySelectorAll('.js-slide')]
         
-        this.current = 0
+        this.currentY = 0
         this.targetY = 0
         this.smoothTarget = []
 
@@ -41,7 +41,7 @@ export default class Slider {
     }
 
     bind() {
-        ['on', 'update', 'resize']
+        ['on', 'onClick', 'update', 'resize']
             .forEach((fn) => this[fn] = this[fn].bind(this))
     }
 
@@ -69,22 +69,30 @@ export default class Slider {
 
     setBounds() {
         this.slider.scrollTop = 1
+        
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
+        this.itemHeight = this.slides[0].getBoundingClientRect().height
+        this.sliderHalfHeight = this.scrollHeight - this.clonesHeight
 
+        // this.max = this.clonesHeight * 2
     }
 
     update() {      
-        this.targetY = lerp(this.targetY, this.current, this.opts.ease)
+        this.targetY = lerp(this.targetY, this.currentY, this.opts.ease)
         this.targetY = Math.round(this.targetY * 100) / 100
+        this.diff = this.currentY - this.targetY
+
         this.sliderInner.style.transform = `translateY(${this.targetY}px)`
 
         if(this.targetY > 0) {
-            this.current = this.targetY = -(this.scrollHeight - this.clonesHeight)
+            this.currentY = this.diff -this.sliderHalfHeight 
+            this.targetY = -this.sliderHalfHeight
             this.sliderInner.style.transform = `translateY(${this.targetY}px)`
             this.disableScroll = true
         } else if(Math.abs(this.targetY) > this.scrollHeight / 2) {
-            this.current = this.targetY = 0
+            this.targetY = 0
+            this.currentY = this.diff
             this.sliderInner.style.transform = `translateY(0)px`
             this.disableScroll = true
         }
@@ -93,15 +101,13 @@ export default class Slider {
     }
 
     on(e) {
-        this.current -= e.deltaY
-        console.log('on')
+        this.currentY -= e.deltaY
         this.slider.classList.add('is-scrolling')
         // this.onY = window.scrollY
     }
     
     off() {
         // this.snap()
-        console.log('off')
         this.slider.classList.remove('is-scrolling')
         // this.offY = this.currentY
     }
@@ -131,6 +137,19 @@ export default class Slider {
     //     this.clamp()
     // }
 
+    onClick() {
+        this.goToNextItem()
+    }
+
+    goToNextItem() {
+        // this.currentItem++
+        this.nextItem()
+    }
+
+    nextItem() {
+        this.currentY -= this.slides[0].getBoundingClientRect().height
+    }
+
     requestAnimationFrame() {
         this.rAF = requestAnimationFrame(this.update)
     }
@@ -142,6 +161,7 @@ export default class Slider {
     addEventListeners() {
         this.slider.addEventListener('scroll', this.update, { passive: true })
         this.slider.addEventListener('wheel', this.on, { passive: true })
+        window.addEventListener('click', this.onClick, false)
 
         let timer = null;
         this.slider.addEventListener('wheel', () => {
