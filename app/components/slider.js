@@ -18,6 +18,10 @@ export default class Slider {
         this.targetY = 0
         this.dragStartY = 0
 
+        // to scale items while moving
+        this.targetScale = 1
+        this.scale = []
+
         this.clones = []
         this.disableScroll = false
         this.scrollHeight = 0  // can be renamed to slider height
@@ -88,6 +92,13 @@ export default class Slider {
         // points from the slides and not from the clones, so it forces at last slide item and it also does not
         // loop back until first clone reaches the top of screen. 
         // SOLUTION: Add clones points to snap array as well.
+
+        this.slides.forEach((slide, i) => {
+            this.scale[i] = 1
+        })
+        this.clones.forEach((slide, i) => {
+            this.scale[i] = 1
+        })
         
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
@@ -102,7 +113,18 @@ export default class Slider {
         this.targetY = Math.round(this.targetY * 100) / 100
         this.diff = this.currentY - this.targetY
 
+        // SLIDER TRANSFORMS 
         this.sliderInner.style.transform = `translateY(${this.targetY}px)`
+        // while moving targetScale becomes 0.9 else it is 1
+        // this.scale[i] += (this.targetScale - this.scale[i]) * this.friction[i]
+        this.slides.forEach((slide, i) => {
+            this.scale[i] += (this.targetScale - this.scale[i]) * 0.225
+            this.slides[i].firstElementChild.style.transform = `scale(${this.scale[i]}) translateZ(0)`
+        })
+        this.clones.forEach((slide, i) => {
+            this.clones[i].firstElementChild.style.transform = `scale(${this.scale[i]}) translateZ(0)`                
+        })
+        
 
         if(this.targetY > 0) {
             this.currentY = this.diff -this.sliderHalfHeight 
@@ -122,13 +144,9 @@ export default class Slider {
     setKeyboard() {
         window.addEventListener("keydown", e => {
             if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-                // this.goToNextItem()
-                this.currentY -= this.itemHeight
-                this.onCurrentItemChange()
+                this.goToNextItem()
             } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-                // this.goToPrevItem()
-                this.currentY += this.itemHeight
-                this.onCurrentItemChange()
+                this.goToPrevItem()
             } else if (e.key === "Enter") {
                 // this.goFocus()
             } else if (e.key === "Escape") {
@@ -146,7 +164,8 @@ export default class Slider {
             this.clones[0].classList.remove('is-active')
         }
 
-        this.slider.classList.add('is-scrolling')
+        // this.slider.classList.add('is-scrolling')
+        this.targetScale = 0.9
         this.checkScroll()
         // this.onY = window.scrollY
     }
@@ -157,6 +176,7 @@ export default class Slider {
         }
         this.timer = setTimeout(() => {
             // do something when scrolling stops
+            this.targetScale = 1
             this.offScroll()
         }, 300)
     }
@@ -164,12 +184,13 @@ export default class Slider {
     offScroll() {
         this.state.flags.scrolling = false
         this.onCurrentItemChange()
-        this.slider.classList.remove('is-scrolling')
+        // this.slider.classList.remove('is-scrolling')
     }
 
     // DRAG CONTROLS
     onDragStart(e) {
         let y = e.y
+        // this.targetScale = 0.9
         this.state.flags.dragging = true
         this.dragStartY = this.currentY - y * this.opts.speed
         this.slider.classList.add('is-grabbing')
@@ -177,6 +198,7 @@ export default class Slider {
 
     onDrag(e) {
         let y = e.y
+        // this.targetScale = 1
         if (this.state.flags.dragging) {
             this.currentY = this.dragStartY + y * this.opts.speed
         }
@@ -214,14 +236,13 @@ export default class Slider {
     }
 
     goToNextItem() {
-        // this.currentY -= this.itemHeight
-        // this.currentY = -(this.state.index.current) * this.itemHeight
-        // this.onCurrentItemChange()
-        // this.nextItem()
+        this.currentY -= this.itemHeight
+        this.onCurrentItemChange()
     }
 
-    nextItem() {
-        this.currentY -= this.slides[0].getBoundingClientRect().height
+    goToPrevItem() {
+        this.currentY += this.itemHeight
+        this.onCurrentItemChange()
     }
 
     snap() {
@@ -243,6 +264,9 @@ export default class Slider {
         window.addEventListener('mousemove', this.onDrag, { passive: true })
         window.addEventListener('mousedown', this.onDragStart, false)
         window.addEventListener('mouseup', this.onDragEnd, false)
+
+        window.addEventListener('keydown', () => this.targetScale = 0.9)
+        window.addEventListener('keyup', () => this.targetScale = 1)
 
         window.addEventListener('resize', this.resize, false)
     }
