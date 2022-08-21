@@ -51,6 +51,7 @@ export default class Slider {
             },
         }
 
+        this.timer = null
         this.rAF = undefined
 
         this.init()
@@ -129,18 +130,27 @@ export default class Slider {
     }
 
     onScroll(e) {
-        this.state.flags.scrolling = true
-
         this.currentY -= e.deltaY
+        this.state.flags.scrolling = true
         
-        let currentRounded = this.state.index.current % this.slides.length
-        this.slides[currentRounded].classList.remove('is-active')
+        this.slides[this.state.index.current % this.slides.length].classList.remove('is-active')
         if(this.state.index.current == this.slides.length) {
             this.clones[0].classList.remove('is-active')
         }
 
         this.slider.classList.add('is-scrolling')
+        this.checkScroll()
         // this.onY = window.scrollY
+    }
+
+    checkScroll() {
+        if(this.timer !== null) {
+            clearTimeout(this.timer)
+        }
+        this.timer = setTimeout(() => {
+            // do something when scrolling stops
+            this.offScroll()
+        }, 300)
     }
     
     offScroll() {
@@ -204,17 +214,6 @@ export default class Slider {
         this.slider.addEventListener('wheel', this.onScroll, { passive: true })
         window.addEventListener('click', this.onClick, false)
 
-        let timer = null;
-        this.slider.addEventListener('wheel', () => {
-            if(timer !== null) {
-                clearTimeout(timer)
-            }
-            timer = setTimeout(() => {
-                // do something
-                this.offScroll()
-            }, 300)
-        }, false)
-        
         window.addEventListener('resize', this.resize, false)
     }
     
