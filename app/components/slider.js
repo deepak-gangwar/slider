@@ -95,11 +95,9 @@ export default class Slider {
         this.clonesHeight = this.getClonesHeight()
         this.itemHeight = this.slides[0].getBoundingClientRect().height
         this.sliderHalfHeight = this.scrollHeight - this.clonesHeight
-
-        // this.max = this.clonesHeight * 2
     }
 
-    update() {      
+    update() {
         this.targetY = lerp(this.targetY, this.currentY, this.opts.ease)
         this.targetY = Math.round(this.targetY * 100) / 100
         this.diff = this.currentY - this.targetY
@@ -140,6 +138,9 @@ export default class Slider {
                 // this.leaveFocus()
             }
         })
+        
+        window.addEventListener('keydown', () => this.targetScale = 0.9)
+        window.addEventListener('keyup', () => this.targetScale = 1)
     }
 
     onScroll(e) {
@@ -151,10 +152,9 @@ export default class Slider {
             this.clones[0].classList.remove('is-active')
         }
 
-        // this.slider.classList.add('is-scrolling')
-        this.targetScale = 0.9
+        this.slider.classList.add('is-scrolling')
+        // this.targetScale = 0.9
         this.checkScroll()
-        // this.onY = window.scrollY
     }
 
     checkScroll() {
@@ -163,7 +163,7 @@ export default class Slider {
         }
         this.timer = setTimeout(() => {
             // do something when scrolling stops
-            this.targetScale = 1
+            // this.targetScale = 1
             this.offScroll()
         }, 300)
     }
@@ -171,7 +171,7 @@ export default class Slider {
     offScroll() {
         this.state.flags.scrolling = false
         this.onCurrentItemChange()
-        // this.slider.classList.remove('is-scrolling')
+        this.slider.classList.remove('is-scrolling')
     }
 
     // DRAG CONTROLS
@@ -251,9 +251,6 @@ export default class Slider {
         window.addEventListener('mousemove', this.onDrag, { passive: true })
         window.addEventListener('mousedown', this.onDragStart, false)
         window.addEventListener('mouseup', this.onDragEnd, false)
-
-        window.addEventListener('keydown', () => this.targetScale = 0.9)
-        window.addEventListener('keyup', () => this.targetScale = 1)
 
         window.addEventListener('resize', this.resize, false)
     }

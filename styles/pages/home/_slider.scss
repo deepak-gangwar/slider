@@ -1,17 +1,15 @@
 .slider {
-  // position: relative;
   position: fixed;
   height: 100%;
   width: 100%;
-  // overflow: auto;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
 
-  // &.is-scrolling{
-  //   .slide {
-  //     transform: scale(0.9);
-  //   }
-  // }
+  &.is-scrolling{
+    .slide {
+      transform: scale(0.9);
+    }
+  }
 
   &.is-grabbing{
     cursor: grabbing;
@@ -25,21 +23,18 @@
 .slide {
   position: relative;
   text-align: center;
-  /* height: clamp(300px, 80%, 700px) */
-  min-height: 100px;
-/*   max-height: 1000px; */
-/*   height: 38%; */
   height: 21vw;
+  min-height: 100px;
   opacity: 0.3;
   transition: transform .6s cubic-bezier(.165,.84,.44,1), opacity .6s cubic-bezier(.165,.84,.44,1);
 }
+
 .slide.is-active {
   opacity: 1;
 }
 
 .slide__title {
   position: absolute;
-  // top: 50%;
   transform: translateY(-50%);
   width: 100%;
   margin: 0;

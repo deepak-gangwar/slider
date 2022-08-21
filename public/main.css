@@ -108,6 +108,9 @@ body {
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
 }
+.slider.is-scrolling .slide {
+  transform: scale(0.9);
+}
 .slider.is-grabbing {
   cursor: grabbing;
 }
@@ -118,11 +121,8 @@ body {
 .slide {
   position: relative;
   text-align: center;
-  /* height: clamp(300px, 80%, 700px) */
-  min-height: 100px;
-  /*   max-height: 1000px; */
-  /*   height: 38%; */
   height: 21vw;
+  min-height: 100px;
   opacity: 0.3;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
