@@ -16,28 +16,13 @@ export default class Slider {
         
         this.currentY = 0
         this.targetY = 0
-        this.smoothTarget = []
-        this.on = {
-            x: 0,
-            y: 0
-        }
+        this.dragStartY = 0
 
         this.clones = []
         this.disableScroll = false
         this.scrollHeight = 0  // can be renamed to slider height
         this.scrollPos = 0
         this.clonesHeight = 0
-
-        // this.onY = 0
-        // this.offY = 0
-
-        // this.currentY = 0
-        // this.lastY = 0
-
-        // this.min = 0
-        // this.max = 0
-
-        // this.centerY = window.innerHeight / 2
 
         this.state = {
             snap: {
@@ -134,6 +119,24 @@ export default class Slider {
         this.requestAnimationFrame(this.update)
     }
 
+    setKeyboard() {
+        window.addEventListener("keydown", e => {
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                // this.goToNextItem()
+                this.currentY -= this.itemHeight
+                this.onCurrentItemChange()
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                // this.goToPrevItem()
+                this.currentY += this.itemHeight
+                this.onCurrentItemChange()
+            } else if (e.key === "Enter") {
+                // this.goFocus()
+            } else if (e.key === "Escape") {
+                // this.leaveFocus()
+            }
+        })
+    }
+
     onScroll(e) {
         this.currentY -= e.deltaY
         this.state.flags.scrolling = true
@@ -160,51 +163,41 @@ export default class Slider {
     
     offScroll() {
         this.state.flags.scrolling = false
-
-        // this.snap()
-        this.snap(this.state)
-        this.state.index.last = this.state.index.current
-        this.state.index.current = this.state.snap.points.indexOf(this.currentY)
-        
         this.onCurrentItemChange()
         this.slider.classList.remove('is-scrolling')
-        // this.offY = this.currentY
     }
 
     // DRAG CONTROLS
     onDragStart(e) {
         let y = e.y
         this.state.flags.dragging = true
-        this.on.y = this.currentY - y * this.opts.speed
+        this.dragStartY = this.currentY - y * this.opts.speed
         this.slider.classList.add('is-grabbing')
-        // this.state.currentY = this.targetY - x * this.opts.speed
     }
 
     onDrag(e) {
         let y = e.y
         if (this.state.flags.dragging) {
-            this.currentY = this.on.y + y * this.opts.speed
-            // this.clamp()
+            this.currentY = this.dragStartY + y * this.opts.speed
         }
     }
 
     onDragEnd() {
         this.state.flags.dragging = false
+        this.onCurrentItemChange()
+        this.slider.classList.remove('is-grabbing')
+    }
+    // DRAG CONTROLS ENDS
+
+    // LOT OF WORK TO ADD CLASS 'is-active'
+    onCurrentItemChange() {
         this.snap(this.state)
         this.state.index.last = this.state.index.current
         this.state.index.current = this.state.snap.points.indexOf(this.currentY)
 
-        this.onCurrentItemChange()
-        this.slider.classList.remove('is-grabbing')
-        // this.state.off = this.state.target
-    }
-    // DRAG CONTROLS ENDS
-
-    onCurrentItemChange() {
-        // LOT OF WORK TO ADD CLASS 'is-active'
-        console.log(this.state.index.last)
         let lastRounded = this.state.index.last % this.slides.length
         let currentRounded = this.state.index.current % this.slides.length
+
         this.slides[lastRounded].classList.remove('is-active')
         // this.slides[currentRounded].classList.add('is-active')
 
@@ -218,12 +211,13 @@ export default class Slider {
             this.clones[0].classList.remove('is-active')
             this.slides[currentRounded].classList.add('is-active')
         }
-        // 'is-active' ENDS
     }
 
     goToNextItem() {
-        // this.currentItem++
-        this.nextItem()
+        // this.currentY -= this.itemHeight
+        // this.currentY = -(this.state.index.current) * this.itemHeight
+        // this.onCurrentItemChange()
+        // this.nextItem()
     }
 
     nextItem() {
@@ -278,6 +272,7 @@ export default class Slider {
     init() {
         this.clone()
         this.setBounds()
+        this.setKeyboard()
         this.addEventListeners()
     }
 }
