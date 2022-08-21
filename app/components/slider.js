@@ -80,23 +80,14 @@ export default class Slider {
         this.state.snap.points = null
         this.state.snap.points = []
 
-        this.slides.forEach(item => {
+        // Combining slides and clones to items
+        this.items = [...this.slides, ...this.clones]
+        this.items.forEach(item => {
             let n = item.getBoundingClientRect().bottom
             this.state.snap.points.push(-n + 0.75 * window.innerHeight)
         })
-        this.clones.forEach(item => {
-            let n = item.getBoundingClientRect().bottom
-            this.state.snap.points.push(-n + 0.75 * window.innerHeight)
-        })
-        // the thing happening with snap glitch is that in snap array we are only adding 
-        // points from the slides and not from the clones, so it forces at last slide item and it also does not
-        // loop back until first clone reaches the top of screen. 
-        // SOLUTION: Add clones points to snap array as well.
 
-        this.slides.forEach((slide, i) => {
-            this.scale[i] = 1
-        })
-        this.clones.forEach((slide, i) => {
+        this.items.forEach((item, i) => {
             this.scale[i] = 1
         })
         
@@ -116,13 +107,9 @@ export default class Slider {
         // SLIDER TRANSFORMS 
         this.sliderInner.style.transform = `translateY(${this.targetY}px)`
         // while moving targetScale becomes 0.9 else it is 1
-        // this.scale[i] += (this.targetScale - this.scale[i]) * this.friction[i]
-        this.slides.forEach((slide, i) => {
+        this.items.forEach((item, i) => {
             this.scale[i] += (this.targetScale - this.scale[i]) * 0.225
-            this.slides[i].firstElementChild.style.transform = `scale(${this.scale[i]}) translateZ(0)`
-        })
-        this.clones.forEach((slide, i) => {
-            this.clones[i].firstElementChild.style.transform = `scale(${this.scale[i]}) translateZ(0)`                
+            this.items[i].firstElementChild.style.transform = `scale(${this.scale[i]}) translateZ(0)`
         })
         
 
