@@ -1,7 +1,4 @@
 import gsap from "gsap"
-
-import { _getClosest } from "../utils/math"
-import { number } from "../utils/math"
 import { lerp } from "../utils/math"
     
 export default class Slider {
@@ -9,7 +6,7 @@ export default class Slider {
         this.bind()
 
         this.opts = {
-            ease: 0.075
+            ease: 0.095
         }
       
         this.slider = document.querySelector('.js-slider')
@@ -92,6 +89,14 @@ export default class Slider {
             let n = item.getBoundingClientRect().bottom
             this.state.snap.points.push(-n + 0.75 * window.innerHeight)
         })
+        this.clones.forEach(item => {
+            let n = item.getBoundingClientRect().bottom
+            this.state.snap.points.push(-n + 0.75 * window.innerHeight)
+        })
+        // the thing happening with snap glitch is that in snap array we are only adding 
+        // points from the slides and not from the clones, so it forces at last slide item and it also does not
+        // loop back until first clone reaches the top of screen. 
+        // SOLUTION: Add clones points to snap array as well.
         
         this.scrollHeight = this.slider.scrollHeight
         this.clonesHeight = this.getClonesHeight()
@@ -127,6 +132,13 @@ export default class Slider {
         this.state.flags.scrolling = true
 
         this.currentY -= e.deltaY
+        
+        let currentRounded = this.state.index.current % this.slides.length
+        this.slides[currentRounded].classList.remove('is-active')
+        if(this.state.index.current == this.slides.length) {
+            this.clones[0].classList.remove('is-active')
+        }
+
         this.slider.classList.add('is-scrolling')
         // this.onY = window.scrollY
     }
@@ -139,9 +151,24 @@ export default class Slider {
         this.state.index.last = this.state.index.current
         this.state.index.current = this.state.snap.points.indexOf(this.currentY)
         
-        this.slides[this.state.index.last].classList.remove('is-active')
-        this.slides[this.state.index.current].classList.add('is-active')
+        // LOT OF WORK TO ADD CLASS 'is-active'
+        let lastRounded = this.state.index.last % this.slides.length
+        let currentRounded = this.state.index.current % this.slides.length
 
+        this.slides[lastRounded].classList.remove('is-active')
+        // this.slides[currentRounded].classList.add('is-active')
+
+        // for the last item
+        // still sometimes it is happening that first item does not get class is-active
+        if(this.state.index.current == this.slides.length) {
+            // comment this line to add active class to first slide as well
+            this.slides[0].classList.remove('is-active')
+            this.clones[0].classList.add('is-active')
+        } else {
+            this.clones[0].classList.remove('is-active')
+            this.slides[currentRounded].classList.add('is-active')
+        }
+        // 'is-active' ENDS
         
         this.slider.classList.remove('is-scrolling')
         // this.offY = this.currentY
