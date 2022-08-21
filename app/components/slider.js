@@ -6,6 +6,7 @@ export default class Slider {
         this.bind()
 
         this.opts = {
+            speed: 1,
             ease: 0.095
         }
       
@@ -16,6 +17,10 @@ export default class Slider {
         this.currentY = 0
         this.targetY = 0
         this.smoothTarget = []
+        this.on = {
+            x: 0,
+            y: 0
+        }
 
         this.clones = []
         this.disableScroll = false
@@ -58,7 +63,7 @@ export default class Slider {
     }
 
     bind() {
-        ['onScroll', 'onClick', 'update', 'resize']
+        ['onScroll', 'onDragStart', 'onDrag', 'onDragEnd', 'update', 'resize']
             .forEach((fn) => this[fn] = this[fn].bind(this))
     }
 
@@ -161,10 +166,45 @@ export default class Slider {
         this.state.index.last = this.state.index.current
         this.state.index.current = this.state.snap.points.indexOf(this.currentY)
         
+        this.onCurrentItemChange()
+        this.slider.classList.remove('is-scrolling')
+        // this.offY = this.currentY
+    }
+
+    // DRAG CONTROLS
+    onDragStart(e) {
+        let y = e.y
+        this.state.flags.dragging = true
+        this.on.y = this.currentY - y * this.opts.speed
+        this.slider.classList.add('is-grabbing')
+        // this.state.currentY = this.targetY - x * this.opts.speed
+    }
+
+    onDrag(e) {
+        let y = e.y
+        if (this.state.flags.dragging) {
+            this.currentY = this.on.y + y * this.opts.speed
+            // this.clamp()
+        }
+    }
+
+    onDragEnd() {
+        this.state.flags.dragging = false
+        this.snap(this.state)
+        this.state.index.last = this.state.index.current
+        this.state.index.current = this.state.snap.points.indexOf(this.currentY)
+
+        this.onCurrentItemChange()
+        this.slider.classList.remove('is-grabbing')
+        // this.state.off = this.state.target
+    }
+    // DRAG CONTROLS ENDS
+
+    onCurrentItemChange() {
         // LOT OF WORK TO ADD CLASS 'is-active'
+        console.log(this.state.index.last)
         let lastRounded = this.state.index.last % this.slides.length
         let currentRounded = this.state.index.current % this.slides.length
-
         this.slides[lastRounded].classList.remove('is-active')
         // this.slides[currentRounded].classList.add('is-active')
 
@@ -179,13 +219,6 @@ export default class Slider {
             this.slides[currentRounded].classList.add('is-active')
         }
         // 'is-active' ENDS
-        
-        this.slider.classList.remove('is-scrolling')
-        // this.offY = this.currentY
-    }
-
-    onClick() {
-        this.goToNextItem()
     }
 
     goToNextItem() {
@@ -212,7 +245,10 @@ export default class Slider {
     addEventListeners() {
         this.slider.addEventListener('scroll', this.update, { passive: true })
         this.slider.addEventListener('wheel', this.onScroll, { passive: true })
-        window.addEventListener('click', this.onClick, false)
+
+        window.addEventListener('mousemove', this.onDrag, { passive: true })
+        window.addEventListener('mousedown', this.onDragStart, false)
+        window.addEventListener('mouseup', this.onDragEnd, false)
 
         window.addEventListener('resize', this.resize, false)
     }
@@ -220,6 +256,10 @@ export default class Slider {
     removeEventListeners() {
         this.slider.removeEventListener('scroll', this.update, { passive: true })
         this.slider.removeEventListener('wheel', this.onScroll, { passive: true })
+
+        window.removeEventListener('mousemove', this.onDrag, { passive: true })
+        window.removeEventListener('mousedown', this.onDragStart, false)
+        window.removeEventListener('mouseup', this.onDragEnd, false)
 
         window.removeEventListener('resize', this.resize, false)
     }

@@ -111,6 +111,12 @@ body {
 .slider.is-scrolling .slide {
   transform: scale(0.9);
 }
+.slider.is-grabbing {
+  cursor: grabbing;
+}
+.slider.is-grabbing .slide {
+  transform: scale(0.9);
+}
 
 .slide {
   position: relative;
