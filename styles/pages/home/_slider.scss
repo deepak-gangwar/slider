@@ -3,6 +3,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  z-index: 1;
   -webkit-overflow-scrolling: touch;
 
   &.is-scrolling{
@@ -51,4 +52,5 @@
   color: #666;
   left: 4rem;
   bottom: 3rem;
+  z-index: 1;
 }

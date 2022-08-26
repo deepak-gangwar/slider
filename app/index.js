@@ -1,5 +1,5 @@
 import Slider from "./components/slider"
-import Smooth from "./components/smoothScroll"
+import Mask from "./components/Canvas/webglMask"
 
 class App {
   constructor() {
@@ -8,6 +8,7 @@ class App {
 
   init() {
     new Slider()
+    new Mask()
   }
 }
 new App()

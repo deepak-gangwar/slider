@@ -12,3 +12,11 @@ body{
   background-color: #0D0E13;
   user-select: none;
 }
+
+audio, canvas, iframe, img, svg, video {
+  vertical-align: middle;
+}
+
+video {
+  object-fit: contain;
+}

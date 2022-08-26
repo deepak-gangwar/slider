@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="/"><title>Deepak Gangwar | Portfolio '22</title><meta name="author" content="Deepak Gangwar"><meta name="copyright" content="Copyright (c) 2021 Deepak Gangwar."><meta name="description" content="Frontend Developer working with a broad range of clients focusing on design and motion"><meta name="robots" content="index, follow"><meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><link rel="canonical" href=""><meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta property="og:title" content="Home - Deepak Gangwar"><meta property="og:description" content=""><meta property="og:url" content=""><meta property="og:site_name" content=""><meta property="article:modified_time" content="2021-05-18T16:53:45+00:00"><meta property="og:image" content=""><meta property="og:image:alt" content=""><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@site_account"><meta name="twitter:description" content=""><meta name="twitter:title" content=""><meta name="twitter:image" content=""><meta name="twitter:image:alt" content=""><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#fff"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="YES"><link rel="apple-touch-startup-image" href=""><meta name="apple-mobile-web-app-title" content=""><meta name="application-name" content=""><link rel="icon" href="" sizes="32x32"><link rel="icon" href="" sizes="192x192"><link rel="apple-touch-icon" href=""><meta name="msapplication-TileImage" content=""><link rel="stylesheet" href="" media="all"><link rel="stylesheet" href="" media="print"><style></style><script src="" id=""></script><script src="" id=""></script><script></script><noscript>&quot;<div id="no-js"><strong>Oops! This site cannot function properly without Javascript. Try to activate it or use a modern browser.</strong></div><style>body{margin: 0; overflow: hidden;} *{box-sizing: border-box;} strong{text-align: center;} #no-js{font-family: sans-serif; width: 100vw; padding: 0 20vw; height: 100vh; display: flex; justify-content: center; align-items: center; font-size: 3vw; position: fixed; top: 0; left: 0; background: #fff}</style>&quot;</noscript><style type="text/css">/*!******************************************************************************************************************************************************************************************************************************************!*\
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="/"><title>Infinite Slider with WebGL mask</title><meta name="author" content="Deepak Gangwar"><meta name="copyright" content="Copyright (c) 2021 Deepak Gangwar."><meta name="description" content="Frontend Developer working with a broad range of clients focusing on design and motion"><meta name="robots" content="index, follow"><meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"><link rel="canonical" href=""><meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta property="og:title" content="Home - Deepak Gangwar"><meta property="og:description" content=""><meta property="og:url" content=""><meta property="og:site_name" content=""><meta property="article:modified_time" content="2022-08-18T16:53:45+00:00"><meta property="og:image" content=""><meta property="og:image:alt" content=""><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@site_account"><meta name="twitter:description" content=""><meta name="twitter:title" content=""><meta name="twitter:image" content=""><meta name="twitter:image:alt" content=""><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#fff"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="YES"><link rel="apple-touch-startup-image" href=""><meta name="apple-mobile-web-app-title" content=""><meta name="application-name" content=""><link rel="icon" href="favicon.jpg" sizes="32x32"><link rel="icon" href="favicon.jpg" sizes="192x192"><link rel="apple-touch-icon" href=""><meta name="msapplication-TileImage" content=""><link rel="preload" as="font" href="fonts/Canela-Light.woff2" type="font/woff2" crossorigin="anonymous"><link rel="stylesheet" href="" media="all"><link rel="stylesheet" href="" media="print"><style></style><script src="" id=""></script><script src="" id=""></script><script></script><noscript>&quot;<div id="no-js"><strong>Oops! This site cannot function properly without Javascript. Try to activate it or use a modern browser.</strong></div><style>body{margin: 0; overflow: hidden;} *{box-sizing: border-box;} strong{text-align: center;} #no-js{font-family: sans-serif; width: 100vw; padding: 0 20vw; height: 100vh; display: flex; justify-content: center; align-items: center; font-size: 3vw; position: fixed; top: 0; left: 0; background: #fff}</style>&quot;</noscript><style type="text/css">/*!******************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./styles/index.scss ***!
   \******************************************************************************************************************************************************************************************************************************************/
 .datgui-ac {
@@ -101,11 +101,133 @@ body {
   user-select: none;
 }
 
+audio, canvas, iframe, img, svg, video {
+  vertical-align: middle;
+}
+
+video {
+  object-fit: contain;
+}
+
+.c-header-home {
+  position: relative;
+  height: 100vh;
+}
+
+/***********/
+.o-container {
+  max-width: 100rem;
+  height: 100%;
+  padding-bottom: 1px;
+  position: relative;
+}
+
+@media only screen and (min-width: 700px) {
+  .o-container {
+    margin-left: 6.25rem;
+    margin-right: 6.25rem;
+  }
+}
+/***********/
+.o-ratio {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.c-header-home_background {
+  z-index: 0;
+  height: 100%;
+}
+
+.o-ratio.-no-overflow {
+  overflow: visible;
+}
+
+.o-ratio:before {
+  display: block;
+  padding-bottom: 100%;
+  width: 100%;
+  content: "";
+}
+
+.u-16\:9:before {
+  padding-bottom: 56.25%;
+}
+
+/*************/
+.c-header-home_image {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+/*************/
+.c-gl-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: block;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.c-gl-image:after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  right: -2px;
+  left: -2px;
+  transform: scaleY(1);
+  transform-origin: center bottom;
+  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.c-gl-image:not(.is-loading):after {
+  transform: scaleY(0);
+  transition-delay: 0.7s;
+}
+
+/************/
+.c-gl-image_wrap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  transform: translateZ(0) scale(1.3);
+  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.c-gl-image:not(.is-loading) .c-gl-image_wrap {
+  transform: translateZ(0) scale(1);
+  transition-delay: 0.6s;
+}
+
+.c-gl-image_wrap canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: #0D0E13;
+}
+
 .slider {
   position: fixed;
   height: 100%;
   width: 100%;
   overflow: hidden;
+  z-index: 1;
   -webkit-overflow-scrolling: touch;
 }
 .slider.is-scrolling .slide {
@@ -147,5 +269,6 @@ body {
   color: #666;
   left: 4rem;
   bottom: 3rem;
+  z-index: 1;
 }
-</style></head><body class="app"><div class="slider js-slider"><div class="slider__inner js-slider__inner"><div class="slide js-slide"><h1 class="slide__title">Beyond b.</h1></div><div class="slide js-slide"><h1 class="slide__title">Aldo</h1></div><div class="slide js-slide"><h1 class="slide__title">Vistaprint</h1></div><div class="slide js-slide"><h1 class="slide__title">Fova</h1></div><div class="slide js-slide"><h1 class="slide__title">Mailchimp</h1></div><div class="slide js-slide"><h1 class="slide__title">Motions</h1></div><div class="slide js-slide"><h1 class="slide__title">Google</h1></div><div class="slide js-slide"><h1 class="slide__title">Trash</h1></div></div></div><div class="text text--bottom-left">Drag to explore</div><script src="main.js"></script></body></html>
+</style></head><body class="app"><div class="slider js-slider"><div class="slider__inner js-slider__inner"><div class="slide js-slide"><h1 class="slide__title">Beyond b.</h1></div><div class="slide js-slide"><h1 class="slide__title">Aldo</h1></div><div class="slide js-slide"><h1 class="slide__title">Vistaprint</h1></div><div class="slide js-slide"><h1 class="slide__title">Fova</h1></div><div class="slide js-slide"><h1 class="slide__title">Mailchimp</h1></div><div class="slide js-slide"><h1 class="slide__title">Motions</h1></div><div class="slide js-slide"><h1 class="slide__title">Google</h1></div><div class="slide js-slide"><h1 class="slide__title">Trash</h1></div></div></div><div class="text text--bottom-left">Drag to explore</div><header class="c-header-home"><div class="o-container -border"><div class="c-header-home_background o-ratio -no-overflow u-16:9"><div class="c-header-home_image"><div class="c-gl-image" data-gl-image-factor="1" data-gl-image-mask-src="mask.jpg"><div class="c-gl-image_wrap" data-gl-image="wrap"><canvas></canvas></div><video src="reel.mp4" autoplay muted loop playisinline="true" role="presentation" data-gl-image="media" crossorigin="anonymous"></video></div></div></div></div></header><script src="main.js"></script></body></html>
