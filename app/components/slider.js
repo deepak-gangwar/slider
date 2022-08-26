@@ -84,7 +84,7 @@ export default class Slider {
         this.items = [...this.slides, ...this.clones]
         this.items.forEach(item => {
             let n = item.getBoundingClientRect().bottom
-            this.state.snap.points.push(-n + 0.75 * window.innerHeight)
+            this.state.snap.points.push(-n + 0.68 * window.innerHeight)
         })
 
         this.items.forEach((item, i) => {
@@ -129,8 +129,10 @@ export default class Slider {
     setKeyboard() {
         window.addEventListener("keydown", e => {
             if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                this.targetScale = 0.9
                 this.goToNextItem()
             } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                this.targetScale = 0.9
                 this.goToPrevItem()
             } else if (e.key === "Enter") {
                 // this.goFocus()
@@ -139,7 +141,7 @@ export default class Slider {
             }
         })
         
-        window.addEventListener('keydown', () => this.targetScale = 0.9)
+        // window.addEventListener('keydown', () => this.targetScale = 0.9)
         window.addEventListener('keyup', () => this.targetScale = 1)
     }
 

@@ -120,7 +120,8 @@ body {
 
 .slide {
   position: relative;
-  text-align: center;
+  display: flex;
+  justify-content: center;
   height: 21vw;
   min-height: 100px;
   opacity: 0.3;
@@ -132,9 +133,9 @@ body {
 }
 
 .slide__title {
+  cursor: pointer;
   position: absolute;
   transform: translateY(-50%);
-  width: 100%;
   margin: 0;
   font-size: 14vw;
   font-weight: normal;

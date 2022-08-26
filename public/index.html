@@ -120,12 +120,10 @@ body {
 
 .slide {
   position: relative;
-  text-align: center;
-  /* height: clamp(300px, 80%, 700px) */
-  min-height: 100px;
-  /*   max-height: 1000px; */
-  /*   height: 38%; */
+  display: flex;
+  justify-content: center;
   height: 21vw;
+  min-height: 100px;
   opacity: 0.3;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
@@ -135,9 +133,9 @@ body {
 }
 
 .slide__title {
+  cursor: pointer;
   position: absolute;
   transform: translateY(-50%);
-  width: 100%;
   margin: 0;
   font-size: 14vw;
   font-weight: normal;
