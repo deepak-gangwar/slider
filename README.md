@@ -5,7 +5,7 @@ Trying to make this for so long, pulled my hairs, popped out my eyeballs, got fr
 ### Installation
 ```bash
 # Clone the repo on you local machine
-git clone git@github.com:deepak-gangwar/bundler-webpack-config.git
+git clone git@github.com:deepak-gangwar/slider.git
 
 # To install dependencies
 npm install
