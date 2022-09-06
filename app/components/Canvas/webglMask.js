@@ -4,14 +4,14 @@ import { lerp } from "../../utils/math"
 import vertexShader from '../../shaders/vertex.glsl'
 import fragmentShader from '../../shaders/fragment.glsl'
 
-const vertex = vertexShader;
-const fragment = fragmentShader;
+const vertex = vertexShader
+const fragment = fragmentShader
 
 export default class Mask {
     constructor() {
         this.bind()
 
-        this.el = document.querySelector('.c-gl-image')
+        this.el = document.querySelector('.preview__img')
         this.el.classList.add('is-loading')
 
         this.maskSrc = this.el.dataset.glImageMaskSrc
@@ -76,7 +76,7 @@ export default class Mask {
     }
 
     initShape() {
-        this.geometry = new ogl.Plane(this.gl, { width: 1, height: 1, widthSegments: 10, heightSegments: 10 });
+        this.geometry = new ogl.Plane(this.gl, { width: 1, height: 1, widthSegments: 10, heightSegments: 10 })
 
         // Init empty texture while source loading
         this.texture = new ogl.Texture(this.gl, {
@@ -84,7 +84,7 @@ export default class Mask {
             generateMipmaps: false,
             width: 1920,
             height: 1080
-        });
+        })
 
         const texture = new ogl.Texture(this.gl, { minFilter: this.gl.LINEAR })
         const image = new Image()
@@ -112,20 +112,18 @@ export default class Mask {
                 maskPosition: { value: new ogl.Vec2(1, 0) },
                 texture: { value: this.texture },
                 speed: { value: this.settings.speed },
-                // meshSize: { value: [10, 10] },
-                // imageSize: { value: [10, 10] },
                 meshSize: { value: [window.innerWidth - 200, window.innerHeight] },
                 imageSize: { value: [this.imageSize.width, this.imageSize.height] },
             },
             cullFace: null,
-        });
+        })
 
         this.mesh = new ogl.Mesh(this.gl, { geometry: this.geometry, program: this.program, })
 
         this.updateSize()
         this.isLoaded = true
         this.el.classList.remove('is-loading')
-        this.mesh.setParent(this.scene);
+        this.mesh.setParent(this.scene)
         this.resize()
     }
 
@@ -188,7 +186,7 @@ export default class Mask {
     }
 
     update(t) {
-        requestAnimationFrame(this.update);
+        requestAnimationFrame(this.update)
 
         this.settings.speed = (this.maskPosition.x - this.program.uniforms.maskPosition.value.x) / (t - this.now)
 
@@ -220,13 +218,13 @@ export default class Mask {
             }
         }
 
-        this.renderer.render({ scene: this.scene, camera: this.camera });
+        this.renderer.render({ scene: this.scene, camera: this.camera })
 
         this.now = t
     }
 
     resize() {
-        // this.camera.perspective({ aspect: this.gl.canvas.width / this.gl.canvas.height });
+        // this.camera.perspective({ aspect: this.gl.canvas.width / this.gl.canvas.height })
         this.camera.aspect = this.gl.canvas.width / this.gl.canvas.height
     }
 
@@ -240,12 +238,12 @@ export default class Mask {
 
     addEventListeners() {
         window.addEventListener('mousemove', this.mousemove, false)
-        window.addEventListener('resize', this.resize, false);
+        window.addEventListener('resize', this.resize, false)
     }
     
     removeEventListeners() {
         window.removeEventListener('mousemove', this.mousemove, false)
-        window.removeEventListener('resize', this.resize, false);
+        window.removeEventListener('resize', this.resize, false)
     }
 
     destroy() {
@@ -253,7 +251,7 @@ export default class Mask {
     }
 
     init() {
-        this.wrapper = this.el.querySelector('.c-gl-image_wrap')
+        this.wrapper = this.el.querySelector('.webgl__wrapper')
 
         if(this.wrapper) {
             this.media = this.el.querySelector('[data-gl-image="media"]')

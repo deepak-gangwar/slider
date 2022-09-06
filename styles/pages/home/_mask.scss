@@ -1,131 +1,88 @@
-.c-header-home {
-	position: relative;
-	height: 100vh;
-	// background-color:#f7f5f8;
+@mixin fill-all-space {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
 }
 
+.preview {
+	position: relative;
+	height: 100vh;
+}
 
 /***********/
 
-.o-container {
-	max-width: 100rem;
+.preview__bg {
+	display: block;
 	height: 100%;
+	max-width: 100rem;
+	overflow: visible; 
 	padding-bottom: 1px;
 	position: relative;
-}
-
-.o-container.-border {
-	// border-left: 1px solid #cfd6d9;
-	// border-right: 1px solid #cfd6d9;
-
+	z-index: 0;
 }
 
 @media only screen and (min-width: 700px) {
-	.o-container {
+	.preview__bg {
 		margin-left: 6.25rem;
 		margin-right: 6.25rem;
 	}
 }
 
-
-/***********/
-
-.o-ratio {
-	position: relative;
-	display: block;
-	overflow: hidden; 
-}
-
-.c-header-home_background {
-	z-index: 0;
-	height: 100%;
-}
-
-.o-ratio.-no-overflow {
-	overflow: visible;
-}
-
-.o-ratio:before {
+.preview__bg:before {
 	display: block;
 	padding-bottom: 100%;
 	width: 100%;
 	content: "";
 }
 
-.u-16\:9:before {
+.aspect:before {
 	padding-bottom: 56.25%;
 }
 
-
 /*************/
 
-.c-header-home_image {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	overflow: hidden;
-	height: 100%;
-}
-
-
-/*************/
-
-.c-gl-image {
+.preview__img {
+	@include fill-all-space;
 	width: 100%;
 	height: 100%;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
 	display: block;
 	overflow: hidden;
 	transform: translateZ(0);
 }
 
-.c-gl-image:after {
+.preview__img:after {
 	content: "";
 	position: absolute;
 	top: -2px;
 	bottom: -2px;
 	right: -2px;
 	left: -2px;
-	// background-color: #f7f5f8;
 	transform: scaleY(1);
 	transform-origin: center bottom;
 	transition: transform .8s cubic-bezier(.645, .045, .355, 1);
 }
 
-.c-gl-image:not(.is-loading):after {
+.preview__img:not(.is-loading):after {
 	transform: scaleY(0);
 	transition-delay: .7s;
 }
 
 /************/
 
-.c-gl-image_wrap {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
+.webgl__wrapper {
+	@include fill-all-space;
 	transform: translateZ(0) scale(1.3);
 	transition: transform .8s cubic-bezier(.645, .045, .355, 1);
 }
 
-.c-gl-image:not(.is-loading) .c-gl-image_wrap {
+.preview__img:not(.is-loading) .webgl__wrapper {
 	transform: translateZ(0) scale(1);
 	transition-delay: .6s;
 }
 
-.c-gl-image_wrap canvas {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
+.webgl__wrapper canvas {
+	@include fill-all-space;
 	background-color: #0D0E13;
-	// background-color: #f7f5f8;
 }
