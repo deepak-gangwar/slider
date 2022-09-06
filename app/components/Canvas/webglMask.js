@@ -41,6 +41,10 @@ export default class Mask {
 
         this.wrapper = null
         this.media = null
+        // this.bgImage.size = {
+        //     width: 0,
+        //     height: 0
+        // }
 
         this.rAF = undefined
 
@@ -95,6 +99,11 @@ export default class Mask {
             }
         }
 
+        this.imageSize = {
+            width: this.media.naturalWidth,
+            height: this.media.naturalHeight
+        }
+
         this.program = new ogl.Program(this.gl, {
             vertex,
             fragment,
@@ -102,7 +111,11 @@ export default class Mask {
                 maskTexture: { value: texture },
                 maskPosition: { value: new ogl.Vec2(1, 0) },
                 texture: { value: this.texture },
-                speed: { value: this.settings.speed }
+                speed: { value: this.settings.speed },
+                // meshSize: { value: [10, 10] },
+                // imageSize: { value: [10, 10] },
+                meshSize: { value: [window.innerWidth - 200, window.innerHeight] },
+                imageSize: { value: [this.imageSize.width, this.imageSize.height] },
             },
             cullFace: null,
         });
@@ -127,7 +140,8 @@ export default class Mask {
     }
 
     updateSize() {
-        this.gap = 30
+        // this.gap = 30
+        this.gap = 0
         this.camUnit = this.calculateUnitSize(this.camera.position.z)
         this.planeBCR.width = this.camUnit.width - this.camUnit.width * (this.gap / 100)
         // this.planeBCR.width = this.camUnit.width

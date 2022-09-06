@@ -1,22 +1,36 @@
 precision highp float;
 precision highp int;
+
 uniform sampler2D texture;
 uniform sampler2D maskTexture;
 uniform float speed;
+uniform vec2 meshSize;
+uniform vec2 imageSize;
+uniform vec2 maskPosition;
 
 varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 newPosition;
-uniform vec2 maskPosition;
-varying vec2 maskUv;
+
+
+// For setting image textures as background-size: cover in CSS
+vec2 backgroundCoverUv(vec2 screenSize, vec2 imageSize, vec2 uv) {
+    float screenRatio = screenSize.x / screenSize.y;
+    float imageRatio = imageSize.x / imageSize.y;
+
+    vec2 newSize = screenRatio < imageRatio
+        ? vec2(imageSize.x * screenSize.y / imageSize.y, screenSize.y)
+        : vec2(screenSize.x, imageSize.y * screenSize.x / imageSize.x);
+
+    vec2 newOffset = (screenRatio < imageRatio
+        ? vec2((newSize.x - screenSize.x) / 2.0, 0.0)
+        : vec2(0.0, (newSize.y - screenSize.y) / 2.0)) / newSize;
+        return uv * screenSize / newSize + newOffset;
+}
 
 void main() {
+    vec2 uv = vec2(vUv.x, vUv.y);
+    vec2 texUv = backgroundCoverUv(meshSize, imageSize, uv);
 
-    vec3 normal = normalize(vNormal);
-    vec4 textureColor = texture2D(texture, vUv);
-    // vec4 maskColor = texture2D(maskTexture, maskUv);
-
-    // textureColor.a = maskColor.r;
+    vec4 textureColor = texture2D(texture, texUv);
 
     gl_FragColor.rgb = textureColor.rgb;
 
@@ -40,23 +54,3 @@ void main() {
     gl_FragColor.rgb *= gl_FragColor.a;
 
 }
-
-// SIMPLE FRAGMENT SHADER USING TEXTURE
-// precision highp float;
-
-// uniform sampler2D texture;
-
-// varying vec2 vUv;
-// varying vec3 vNormal;
-
-// void main() {
-//     vec3 normal = normalize(vNormal);
-//     vec3 tex = texture2D(texture, vUv).rgb;
-    
-//     // vec3 light = normalize(vec3(0.5, 1.0, -0.3));
-//     // float shading = dot(normal, light) * 0.15;
-    
-//     // gl_FragColor.rgb = tex + shading;
-//     gl_FragColor.rgb = tex;
-//     gl_FragColor.a = 1.0;
-// }
