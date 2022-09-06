@@ -1,4 +1,4 @@
-import { ogl } from "./ogl"
+import { Vec2, Renderer, Camera, Plane, Texture, Program, Mesh, Transform } from 'ogl'
 import { lerp } from "../../utils/math"
 
 import vertexShader from '../../shaders/vertex.glsl'
@@ -28,8 +28,8 @@ export default class Mask {
 
         this.isLoaded = false
 
-        this.maskPosition = new ogl.Vec2(1, 0)
-        this.mouse = new ogl.Vec2(-0.5, -0.5)
+        this.maskPosition = new Vec2(1, 0)
+        this.mouse = new Vec2(-0.5, -0.5)
 
         this.now = 0
         this.settings = {
@@ -58,7 +58,7 @@ export default class Mask {
 
     initRenderer() {
         const canvas = this.wrapper.querySelector('canvas')
-        this.renderer = new ogl.Renderer({ canvas: canvas, dpr: 1, antialias: !0, premultiplyAlpha: !1, alpha: !0 })
+        this.renderer = new Renderer({ canvas: canvas, dpr: 1, antialias: !0, premultiplyAlpha: !1, alpha: !0 })
         this.renderer.setSize(this.BCR.width, this.BCR.height)
 
         this.gl = this.renderer.gl
@@ -66,27 +66,27 @@ export default class Mask {
     }
     
     initScene() {
-        this.scene = new ogl.Transform()
+        this.scene = new Transform()
     }
 
     initCamera() {
         this.fov = 45
-        this.camera = new ogl.Camera(this.gl, { fov: this.fov })
+        this.camera = new Camera(this.gl, { fov: this.fov })
         this.camera.position.set(0, 0, 1)
     }
 
     initShape() {
-        this.geometry = new ogl.Plane(this.gl, { width: 1, height: 1, widthSegments: 10, heightSegments: 10 })
+        this.geometry = new Plane(this.gl, { width: 1, height: 1, widthSegments: 10, heightSegments: 10 })
 
         // Init empty texture while source loading
-        this.texture = new ogl.Texture(this.gl, {
+        this.texture = new Texture(this.gl, {
             minFilter: this.gl.LINEAR,
             generateMipmaps: false,
             width: 1920,
             height: 1080
         })
 
-        const texture = new ogl.Texture(this.gl, { minFilter: this.gl.LINEAR })
+        const texture = new Texture(this.gl, { minFilter: this.gl.LINEAR })
         const image = new Image()
 
         image.src = this.maskSrc
@@ -104,12 +104,12 @@ export default class Mask {
             height: this.media.naturalHeight
         }
 
-        this.program = new ogl.Program(this.gl, {
+        this.program = new Program(this.gl, {
             vertex,
             fragment,
             uniforms: {
                 maskTexture: { value: texture },
-                maskPosition: { value: new ogl.Vec2(1, 0) },
+                maskPosition: { value: new Vec2(1, 0) },
                 texture: { value: this.texture },
                 speed: { value: this.settings.speed },
                 meshSize: { value: [window.innerWidth - 200, window.innerHeight] },
@@ -118,7 +118,7 @@ export default class Mask {
             cullFace: null,
         })
 
-        this.mesh = new ogl.Mesh(this.gl, { geometry: this.geometry, program: this.program, })
+        this.mesh = new Mesh(this.gl, { geometry: this.geometry, program: this.program, })
 
         this.updateSize()
         this.isLoaded = true
@@ -145,7 +145,7 @@ export default class Mask {
         // this.planeBCR.width = this.camUnit.width
         this.planeBCR.height = this.planeBCR.width / this.camera.aspect
 
-        this.geometry = new ogl.Plane(this.gl, { width: this.planeBCR.width, height: this.planeBCR.height, widthSegments: 100, heightSegments: 100 })
+        this.geometry = new Plane(this.gl, { width: this.planeBCR.width, height: this.planeBCR.height, widthSegments: 100, heightSegments: 100 })
         this.mesh.geometry = this.geometry
 
         this.gl.canvas.style.width = `${this.BCR.width}px`
