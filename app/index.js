@@ -1,5 +1,6 @@
 import Slider from "./components/slider"
 import Mask from "./components/Canvas/webglMask"
+import { Sniff } from "./utils/Sniffer"
 
 class App {
   constructor() {
@@ -8,8 +9,18 @@ class App {
   }
 
   init() {
-    new Slider()
-    new Mask()
+    if(Sniff.mobile) {
+      const notice = document.createElement('div')
+      notice.classList.add('notice')
+
+      const para = document.createElement('p')
+      para.textContent = `This site is currently not for mobile. Please visit on a desktop.`
+      notice.appendChild(para)
+      document.body.appendChild(notice)
+    } else {
+      new Slider()
+      new Mask()
+    }
   }
 
   styleConsoleForDevs() {
